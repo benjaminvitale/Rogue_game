@@ -33,7 +33,6 @@ def render(tiles: List[List[int]],
         print("|")
     print("-" + "-" * len(tiles[0]) + "-")
 
-
 def level(rows: int,
           columns: int) -> List[List[int]]:
     """
@@ -54,10 +53,7 @@ def level(rows: int,
 
     return tiles
 
-
-def dungeon(rows: int,
-            columns: int,
-            levels: int = 3) -> List[List[List[int]]]:
+def dungeon(rows: int, columns: int, levels: int = 3) -> List[List[List[int]]]:
     """
     Creates a dungeon
 
@@ -93,9 +89,7 @@ def dungeon(rows: int,
     return dungeon_levels
 
 
-def add_item(dungeon: List[List[List[int]]],
-             item: dict,
-             level: int):
+def add_item(dungeon: List[List[List[int]]], item: dict, level: int):
     """
     Places items on a newly generated map. Unreachability of positions is not checked by the function.
 
@@ -162,3 +156,9 @@ def get_path(level: List[List[int]],
     """Return a sequence of locations between initial location and end location, if it exits."""
     # completar
     raise NotImplementedError
+
+
+d = dungeon(config.ROWS , config.COLUMNS)
+r = render (d[1], {'location': (10,5), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
+add = add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
+

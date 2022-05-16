@@ -1,1 +1,1 @@
-"a"
+import libtcodpy as libtcod
