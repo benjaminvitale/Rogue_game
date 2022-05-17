@@ -4,9 +4,7 @@ import config
 import human
 
 
-def move(level: List[List[int]],
-         character: dict,
-         direction: str):
+def move(level: List[List[int]], character: dict, direction: str):
     """
     Moves an entity from a given location to the appropriate location based on the game level and equipment for the
     character.
@@ -29,7 +27,7 @@ def move_to(level: List[List[int]], entity: dict, location: Tuple[int, int]):
 
 
 def move_up(level: List[List[int]], entity: dict):
-    # completar
+    #
     raise NotImplementedError
 
 

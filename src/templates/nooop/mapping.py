@@ -138,16 +138,32 @@ def set_tile(level: List[List[int]],
 def is_free(level: List[List[int]],
             xy: Tuple[int, int]) -> bool:
     """Check if a given location is free of other entities."""
-    # completar
-    raise NotImplementedError
+    x , y = xy
+    if level[x][y] == 0:
+        return True
+    return False
 
 
 def are_connected(level: List[List[int]],
                   initial: Tuple[int, int],
                   end: Tuple[int, int]) -> bool:
     """Check if there is walkable path between initial location and end location."""
+    xi , yi = initial
+    xf , yf = end
+    difx = xi - xf if xi > xf else xf - xi
+    bigx = xi if xi>xf else xf
+    dify = yi - yf if yi > yf else yf - yi
+    bigy = yi if yi>yf else yf
+    path = False
+    for i in range(bigx , bigx + difx):
+        for j in range(bigy , bigy + dify):
+            print((i,j))
+            if is_free(level, (i,j)):
+                path = True
+            else:
+                return False
+    return path
     # completar
-    raise NotImplementedError
 
 
 def get_path(level: List[List[int]],
@@ -157,8 +173,8 @@ def get_path(level: List[List[int]],
     # completar
     raise NotImplementedError
 
-
+# Estas lineas son para ir viendo en la terminal que pasa
 d = dungeon(config.ROWS , config.COLUMNS)
-r = render (d[1], {'location': (10,5), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
-add = add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
-
+add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
+set_tile(d[1], (9,7), '(')
+r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
