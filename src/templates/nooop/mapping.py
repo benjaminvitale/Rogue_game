@@ -1,5 +1,7 @@
+from operator import ne
 import random
-from typing import List, Tuple
+from typing import List, Tuple, Set
+from copy import copy
 
 
 import config
@@ -136,34 +138,102 @@ def set_tile(level: List[List[int]],
 
 
 def is_free(level: List[List[int]],
-            xy: Tuple[int, int]) -> bool:
-    """Check if a given location is free of other entities."""
-    x , y = xy
-    if level[x][y] == 0:
-        return True
-    return False
+            xy: Tuple[int, int],
+            visited: Set) -> bool:
+    """
+    Check if a given location is free of other entities and if it is usable.
+    
+    :param level: dungeon level map (list of lists of ints)
+    :param xy: location in the map (tuple of ints (row, column))
+    :param visited: locations already used (set)
+    
+    :returns: True if it is, False otherwise
+    """
+    if xy in visited:
+        return False
+    if level[xy[0]][xy[1]] != 0:
+        return False
+    return True
 
 
 def are_connected(level: List[List[int]],
                   initial: Tuple[int, int],
                   end: Tuple[int, int]) -> bool:
-    """Check if there is walkable path between initial location and end location."""
-    xi , yi = initial
-    xf , yf = end
-    difx = xi - xf if xi > xf else xf - xi
-    bigx = xi if xi>xf else xf
-    dify = yi - yf if yi > yf else yf - yi
-    bigy = yi if yi>yf else yf
+    """
+    Check if there is walkable path between initial location and end location.
+    
+    :param level: dungeon level map (list of lists of ints)
+    :param initial: starting location (tuple of ints)
+    :param end: ending location (tuple of ints)
+
+    :return: True if there is, False otherwise
+    """
+    
+    return search_path (level, initial, end, set())
+
+def search_path (level: List[List[int]], initial: Tuple[int,int], end: Tuple[int,int], visited: Set)-> bool:
+    '''
+    Checks if there is a walkable path between inital location and end location
+
+    :param level: dungeon level map (list of lists of ints)
+    :param initial: starting location (tuple of ints)
+    :param end: ending location (tuple of ints)
+    :param visited: locations already visited (set)
+
+    :returns: True if there is, False otherwise
+    '''
+    if initial == end:
+        return True
+
     path = False
-    for i in range(bigx , bigx + difx):
-        for j in range(bigy , bigy + dify):
-            print((i,j))
-            if is_free(level, (i,j)):
-                path = True
-            else:
-                return False
+    for loc in get_neighbours (level, initial):
+        if is_free (level, loc, visited):
+            visited.add (loc)
+            copy_visited = copy(visited)
+            path = search_path (level, initial, end, copy_visited)
+        if path:
+            break
+
     return path
-    # completar
+
+def get_neighbours (level: List[List[int]], xy: Tuple[int,int]) ->List[Tuple[int,int]]:
+    '''
+    Given a map, it searchs for all the possible points an object could move
+
+    :param level: dungeon level map (List of lists of ints)
+    :param xy: point in the map (tuple (row, column))
+
+    :returns neighbours: List with all the neighbours of the point (only includes 4, not diagonals)
+    '''
+
+    directions = {'d': (0,1) , 'a': (0,-1), 'w': (1,0), 's': (-1,0)}
+    rows = len(level)
+    col = len(level[0])
+    neighbours = []
+    for deltas in directions.values():
+        possible = (xy[0]+deltas[0], xy[1] + deltas[1])
+        if is_in_map(rows, col, possible):
+            neighbours.append (possible)
+
+    return neighbours
+
+def is_in_map (rows: int, cols: int, point: Tuple[int,int]) -> bool:
+    '''
+    Given a specific location, it checks if the point is inside the parameters
+
+    :param rows: rows of a map
+    :param cols: columns of a map
+    :param point: point in the form of Tuple(row,col)
+
+    :returns: True if it is inside, False if it is not
+    '''
+
+    if point[0] < 0 or point[0] >= rows:
+        return False
+    if point[1] < 0 or point[1] >= cols:
+        return False
+
+    return True
 
 
 def get_path(level: List[List[int]],
@@ -178,3 +248,13 @@ d = dungeon(config.ROWS , config.COLUMNS)
 add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
 set_tile(d[1], (9,7), '(')
 r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
+
+'''
+mapa = [
+    [0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0]]
+print(are_connected (mapa,(0,0),(3,4)))
+'''
+#las funcion de are_connected no funciona bien, despues voy a chequiar xq esta dando mal
