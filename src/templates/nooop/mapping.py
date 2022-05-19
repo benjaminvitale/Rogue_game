@@ -5,7 +5,7 @@ from copy import copy
 
 
 import config
-from actions import move_up
+import actions
 
 EMPTY = 0
 
@@ -248,11 +248,25 @@ def map_valid (level, initial, end):
         return False
 
 # Estas lineas son para ir viendo en la terminal que pasa
+player = {'location': (10,20), 'face': config.JUGADOR}
+gnome = {'location' : (20 , 40), 'face': config.GNOME}
 d = dungeon(config.ROWS , config.COLUMNS)
 add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
 set_tile(d[1], (9,7), '(')
-r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
+r = render (d[1], player, gnome)
 
 #print(are_connected(d[1], (9,20), (9,1)))
-move_up (d[1], {'location': (10,20), 'face': config.JUGADOR})
-r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
+
+#Esto es para ver como se iba moviendo el player
+dire = True
+while dire != 'stop':
+    dire = input("direction: ")
+    if dire == 'w':
+        actions.move_up (d[1], player)
+    elif dire == 'a':
+        actions.move_left (d[1], player)
+    elif dire == 's':
+        actions.move_down (d[1], player)
+    elif dire == 'd':
+        actions.move_right (d[1], player)
+    r = render (d[1], player , gnome)
