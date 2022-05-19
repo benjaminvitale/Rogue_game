@@ -5,7 +5,9 @@ from copy import copy
 
 
 import config
+from actions import move_up
 
+EMPTY = 0
 
 def render(tiles: List[List[int]],
            player: dict, gnome: dict):
@@ -136,11 +138,8 @@ def set_tile(level: List[List[int]],
     x, y = location
     level[x][y] = tile
 
-
-def is_free(level: List[List[int]],
-            xy: Tuple[int, int],
-            visited: Set) -> bool:
-    """
+def is_free (visited: Set, level: List[List[int]], xy: Tuple[int, int]):
+    '''
     Check if a given location is free of other entities and if it is usable.
     
     :param level: dungeon level map (list of lists of ints)
@@ -148,18 +147,16 @@ def is_free(level: List[List[int]],
     :param visited: locations already used (set)
     
     :returns: True if it is, False otherwise
-    """
+    '''
     if xy in visited:
         return False
-    if level[xy[0]][xy[1]] != 0:
+    if level[xy[0]][xy[1]] != EMPTY:
         return False
+
     return True
 
-
-def are_connected(level: List[List[int]],
-                  initial: Tuple[int, int],
-                  end: Tuple[int, int]) -> bool:
-    """
+def are_connected (level: List[List[int]], initial: Tuple[int, int], end: Tuple[int, int]):
+    '''
     Check if there is walkable path between initial location and end location.
     
     :param level: dungeon level map (list of lists of ints)
@@ -167,11 +164,10 @@ def are_connected(level: List[List[int]],
     :param end: ending location (tuple of ints)
 
     :return: True if there is, False otherwise
-    """
-    
+    '''
     return search_path (level, initial, end, set())
 
-def search_path (level: List[List[int]], initial: Tuple[int,int], end: Tuple[int,int], visited: Set)-> bool:
+def search_path (level: List[List[int]], initial: Tuple[int, int], end: Tuple[int, int], visited: Set):
     '''
     Checks if there is a walkable path between inital location and end location
 
@@ -185,18 +181,17 @@ def search_path (level: List[List[int]], initial: Tuple[int,int], end: Tuple[int
     if initial == end:
         return True
 
-    path = False
-    for loc in get_neighbours (level, initial):
-        if is_free (level, loc, visited):
-            visited.add (loc)
-            copy_visited = copy(visited)
-            path = search_path (level, initial, end, copy_visited)
-        if path:
+    found = False
+    for point in get_neighbours(level, initial):
+        if is_free (visited, level, point):
+            visited.add(point)
+            current_visited = copy(visited)
+            found = search_path(level, point, end, current_visited)
+        if found:
             break
+    return found
 
-    return path
-
-def get_neighbours (level: List[List[int]], xy: Tuple[int,int]) ->List[Tuple[int,int]]:
+def get_neighbours (level: List[List[int]], xy: Tuple[int, int]):
     '''
     Given a map, it searchs for all the possible points an object could move
 
@@ -205,19 +200,17 @@ def get_neighbours (level: List[List[int]], xy: Tuple[int,int]) ->List[Tuple[int
 
     :returns neighbours: List with all the neighbours of the point (only includes 4, not diagonals)
     '''
-
-    directions = {'d': (0,1) , 'a': (0,-1), 'w': (1,0), 's': (-1,0)}
+    directions = {'s': [1, 0],'a': [0, -1],'w': [-1, 0],'d': [0, 1]}
     rows = len(level)
-    col = len(level[0])
+    cols = len(level[0])
     neighbours = []
-    for deltas in directions.values():
-        possible = (xy[0]+deltas[0], xy[1] + deltas[1])
-        if is_in_map(rows, col, possible):
-            neighbours.append (possible)
-
+    for point in directions.values():
+        possible = (xy[0] + point[0], xy[1] + point[1])
+        if is_inside_map(rows, cols,possible):
+            neighbours.append(possible)
     return neighbours
 
-def is_in_map (rows: int, cols: int, point: Tuple[int,int]) -> bool:
+def is_inside_map(num_rows: int, num_cols: int, point: Tuple[int, int]) -> bool:
     '''
     Given a specific location, it checks if the point is inside the parameters
 
@@ -227,12 +220,11 @@ def is_in_map (rows: int, cols: int, point: Tuple[int,int]) -> bool:
 
     :returns: True if it is inside, False if it is not
     '''
-
-    if point[0] < 0 or point[0] >= rows:
+    if point[0] < 0 or point[0] >= num_rows:
         return False
-    if point[1] < 0 or point[1] >= cols:
+    
+    if point[1] < 0 or point[1] >= num_cols:
         return False
-
     return True
 
 
@@ -243,18 +235,24 @@ def get_path(level: List[List[int]],
     # completar
     raise NotImplementedError
 
+def map_valid (level, initial, end):
+    '''
+    Checks if the game could be played by analizing the surroundings of a given location
+    #la funcion a futuro se tendria q implementar con la loc del jugador a la loc de las escaleras (ambas), 
+    #a la de un pico/espada si fuese necesario
+    '''
+    neighbours = get_neighbours(level,initial)
+    for point in neighbours:
+        if are_connected (level, point, end):
+            return True
+        return False
+
 # Estas lineas son para ir viendo en la terminal que pasa
 d = dungeon(config.ROWS , config.COLUMNS)
 add_item(d, {'location': (9,5), 'face': config.SWORD}, 1)
 set_tile(d[1], (9,7), '(')
 r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
 
-'''
-mapa = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0]]
-print(are_connected (mapa,(0,0),(3,4)))
-'''
-#las funcion de are_connected no funciona bien, despues voy a chequiar xq esta dando mal
+#print(are_connected(d[1], (9,20), (9,1)))
+move_up (d[1], {'location': (10,20), 'face': config.JUGADOR})
+r = render (d[1], {'location': (10,20), 'face': config.JUGADOR} , {'location' : (20 , 40), 'face': config.GNOME})
