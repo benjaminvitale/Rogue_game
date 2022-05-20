@@ -3,6 +3,7 @@ from typing import Union
 
 import mapping
 import player
+from magic import read_single_keypress as keypress
 
 
 numeric = Union[int, float]
@@ -16,7 +17,7 @@ def clip(value: numeric, minimum: numeric, maximum: numeric) -> numeric:
     return value
 
 
-def attack(dungeon, player, ...): # completar
+def attack(dungeon, player): # completar
     # completar
     raise NotImplementedError
 
@@ -27,9 +28,11 @@ def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[num
 
 
 def move_up(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
-
+    loc = player.loc()
+    print(loc)
+    new_loc = (loc[0],loc[1]-1)
+    dungeon.add_item(' ', None, loc)
+    dungeon.add_item(player,None,new_loc)
 
 def move_down(dungeon: mapping.Dungeon, player: player.Player):
     # completar
@@ -59,3 +62,13 @@ def descend_stair(dungeon: mapping.Dungeon, player: player.Player):
 def pickup(dungeon: mapping.Dungeon, player: player.Player):
     # completar
     raise NotImplementedError
+
+d = mapping.Dungeon(25,80)
+p = player.Player('sere', (20,9))
+p.face = "@"
+
+d.render(p)
+direction = keypress()
+if direction[0] == 'w':
+    move_up(d , p)
+d.render(p)

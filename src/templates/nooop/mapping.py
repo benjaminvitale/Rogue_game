@@ -3,7 +3,6 @@ import random
 from typing import List, Tuple, Set
 from copy import copy
 
-
 import config
 import actions
 
@@ -260,7 +259,7 @@ r = render (d[1], player, gnome)
 #Esto es para ver como se iba moviendo el player
 dire = True
 while dire != 'stop':
-    dire = input("direction: ")
+    dire = input("Dire: ")
     if dire == 'w':
         actions.move_up (d[1], player)
     elif dire == 'a':

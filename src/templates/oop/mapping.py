@@ -261,3 +261,7 @@ class Dungeon:
     def is_free(self, xy: Location) -> bool:
         """NOT IMPLEMENTED. Check if a given location is free of other entities. See Level.is_free()."""
         return self.dungeon[self.level].is_free(xy)
+
+d = Dungeon(25,80)
+p = player.Player('sere', (20,9))
+p.face = "@"

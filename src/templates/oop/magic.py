@@ -1,3 +1,6 @@
+from tkinter import W
+
+
 def read_single_keypress():
     """Waits for a single keypress on stdin.
 
@@ -53,3 +56,4 @@ def read_single_keypress():
         termios.tcsetattr(fd, termios.TCSAFLUSH, attrs_save)
         fcntl.fcntl(fd, fcntl.F_SETFL, flags_save)
     return tuple(ret)
+
