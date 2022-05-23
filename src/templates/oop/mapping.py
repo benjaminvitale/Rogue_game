@@ -169,8 +169,10 @@ class Level:
 
     def is_free(self, xy: Location) -> bool:
         """Check if a given location is free of other entities."""
-        # completar
-        raise NotImplementedError
+        x , y = xy
+        if self.tiles[x][y] is AIR:
+            return True
+        return False
 
     def are_connected(self, initial: Location, end: Location) -> bool:
         """Check if there is walkable path between initial location and end location."""
@@ -262,6 +264,4 @@ class Dungeon:
         """NOT IMPLEMENTED. Check if a given location is free of other entities. See Level.is_free()."""
         return self.dungeon[self.level].is_free(xy)
 
-d = Dungeon(25,80)
-p = player.Player('sere', (20,9))
-p.face = "@"
+

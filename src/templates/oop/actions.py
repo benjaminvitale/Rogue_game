@@ -1,9 +1,10 @@
 from typing import Union
-
+import random
 
 import mapping
 import player
 from magic import read_single_keypress as keypress
+from mapping import AIR
 
 
 numeric = Union[int, float]
@@ -29,24 +30,30 @@ def move_to(dungeon: mapping.Dungeon, player: player.Player, location: tuple[num
 
 def move_up(dungeon: mapping.Dungeon, player: player.Player):
     loc = player.loc()
-    print(loc)
     new_loc = (loc[0],loc[1]-1)
-    dungeon.add_item(' ', None, loc)
-    dungeon.add_item(player,None,new_loc)
+    if dungeon.is_walkable(new_loc):
+        player.move_to(new_loc)
+    
 
 def move_down(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    loc = player.loc()
+    new_loc = (loc[0],loc[1]+1)
+    if dungeon.is_walkable(new_loc):
+        player.move_to(new_loc)
 
 
 def move_left(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    loc = player.loc()
+    new_loc = (loc[0]-1,loc[1])
+    if dungeon.is_walkable(new_loc):
+        player.move_to(new_loc)
 
 
 def move_right(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+    loc = player.loc()
+    new_loc = (loc[0]+1,loc[1])
+    if dungeon.is_walkable(new_loc):
+        player.move_to(new_loc)
 
 
 def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
@@ -63,12 +70,24 @@ def pickup(dungeon: mapping.Dungeon, player: player.Player):
     # completar
     raise NotImplementedError
 
+loc = [20,9]
 d = mapping.Dungeon(25,80)
-p = player.Player('sere', (20,9))
+p = player.Player('sere', loc)
 p.face = "@"
 
 d.render(p)
 direction = keypress()
-if direction[0] == 'w':
-    move_up(d , p)
-d.render(p)
+while direction[0] == 'w' or direction[0] == 'a' or direction[0] == 's' or direction[0] == 'd':
+    if direction[0] == 'w':
+        move_up(d, p)
+    if direction[0] == 'a':
+        move_left(d,p)
+    if direction[0] == 's':
+        move_down(d,p)
+    if direction[0] == 'd':
+        move_right(d,p)
+    
+    p.face = "@"
+    d.render(p)
+    direction = keypress()
+
