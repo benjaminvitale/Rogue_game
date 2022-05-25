@@ -5,7 +5,7 @@ import magic
 
 import random
 from human import Human
-from items import Item
+from items import Item, PickAxe
 import actions
 
 
@@ -18,12 +18,14 @@ if __name__ == "__main__":
     level = 0
     name = input("Enter name: ")
     player = Human (name, (20,9))
+    pickaxe = PickAxe ('pickaxe', ')')
 
     # initial locations may be random generated
     gnomes = ''
 
     dungeon = mapping.Dungeon(ROWS, COLUMNS, 3)
     # Agregarle cosas al dungeon, cosas que no se creen automáticamente al crearlo (por ejemplo, ya se crearon las escaleras).
+    dungeon.add_item(pickaxe, 1)
 
     turns = 0
     key = ''
@@ -36,6 +38,12 @@ if __name__ == "__main__":
         key = magic.read_single_keypress()[0]
         if key == 'w' or key == 's' or key == 'a' or key == 'd':
             actions.move(dungeon, player, key)
+
+        if key == 'p':
+            it = actions.pickup(dungeon, player)
+            if it != []:
+                pickaxe_tool = True
+        
 
         # Hacer algo con keys:
         # move player and/or gnomes
