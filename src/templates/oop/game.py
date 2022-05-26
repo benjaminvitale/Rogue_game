@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
     turns = 0
     key = ''
+    pickaxe_tool = False
     while dungeon.level >= 0 and key != 'q':
         turns += 1
         # render map
@@ -36,14 +37,13 @@ if __name__ == "__main__":
 
         # read key
         key = magic.read_single_keypress()[0]
-        if key == 'w' or key == 's' or key == 'a' or key == 'd':
-            actions.move(dungeon, player, key)
-
         if key == 'p':
-            it = actions.pickup(dungeon, player)
-            if it != []:
-                pickaxe_tool = True
-        
+            item_list = actions.pickup(dungeon, player)
+            for it in item_list:
+                if isinstance(it, PickAxe):
+                    pickaxe_tool = True
+        if key == 'w' or key == 's' or key == 'a' or key == 'd':
+            actions.move(dungeon, player, key, pickaxe_tool)
 
         # Hacer algo con keys:
         # move player and/or gnomes
