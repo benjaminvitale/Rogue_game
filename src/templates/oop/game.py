@@ -44,6 +44,12 @@ if __name__ == "__main__":
                     pickaxe_tool = True
         if key == 'w' or key == 's' or key == 'a' or key == 'd':
             actions.move(dungeon, player, key, pickaxe_tool)
+        
+        #no funciona
+        if dungeon.loc(player.loc()) == mapping.STAIR_UP:
+            actions.climb_stair(dungeon.dungeon[level-1], player, key)
+        if dungeon.loc(player.loc()) == mapping.STAIR_DOWN:
+            actions.descend_stair(dungeon.dungeon[level+1], player, key)
 
         # Hacer algo con keys:
         # move player and/or gnomes

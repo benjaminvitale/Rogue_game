@@ -37,14 +37,12 @@ def move (dungeon: mapping.Dungeon, player: player.Player, key, pickaxe_tool = F
             dungeon.dig(new_loc)
             player.move_to(new_loc)
 
-def climb_stair(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+def climb_stair(dungeon: mapping.Dungeon, player: player.Player, key):
+    move (dungeon, player, key)
 
 
-def descend_stair(dungeon: mapping.Dungeon, player: player.Player):
-    # completar
-    raise NotImplementedError
+def descend_stair(dungeon: mapping.Dungeon, player: player.Player, key):
+    move(dungeon, player, key)
 
 
 def pickup(dungeon: mapping.Dungeon, player: player.Player):
