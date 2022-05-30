@@ -46,10 +46,10 @@ if __name__ == "__main__":
             actions.move(dungeon, player, key, pickaxe_tool)
         
         #no funciona
-        if dungeon.loc(player.loc()) == mapping.STAIR_UP:
-            actions.climb_stair(dungeon.dungeon[level-1], player, key)
+        if dungeon.get_items(player.loc()) == mapping.STAIR_UP:
+            actions.climb_stair(dungeon, player)
         if dungeon.loc(player.loc()) == mapping.STAIR_DOWN:
-            actions.descend_stair(dungeon.dungeon[level+1], player, key)
+            actions.descend_stair(dungeon, player)
 
         # Hacer algo con keys:
         # move player and/or gnomes
