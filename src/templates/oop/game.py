@@ -17,11 +17,11 @@ if __name__ == "__main__":
     # initial parameters
     level = 0
     name = input("Enter name: ")
-    player = Human (name, (20,9))
+    player = Human (name, level.find_free_tile())
     pickaxe = PickAxe ('pickaxe', ')')
 
     # initial locations may be random generated
-    gnomes = ''
+    gnome = Gnome ('gnome',level.find_free_tile())
 
     dungeon = mapping.Dungeon(ROWS, COLUMNS, 3)
     # Agregarle cosas al dungeon, cosas que no se creen automáticamente al crearlo (por ejemplo, ya se crearon las escaleras).
