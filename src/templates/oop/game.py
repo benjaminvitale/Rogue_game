@@ -2,7 +2,7 @@
 import time
 import mapping
 import magic
-
+from gnome import Gnome
 import random
 from human import Human
 from items import Item, PickAxe
